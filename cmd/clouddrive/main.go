@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/italoservio/clouddrive/internal/clouddrive/entities"
@@ -11,15 +12,28 @@ import (
 
 func handle(wri http.ResponseWriter, req *http.Request) {
 	user := entities.CreateUser("foo", "bar")
-	json.NewEncoder(wri).Encode(user)
+
+	response := mid.CreateHttpResponse(
+		http.StatusOK,
+		"",
+		user,
+	)
+
+	obj, err := json.Marshal(response)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	wri.Write(obj)
 }
 
 func main() {
 	http.HandleFunc(
 		"/",
-		mid.Intercept(
+		mid.ReqHandler(
 			[]mid.Middleware{
-				mid.Json(),
+				mid.JsonOut(),
+				mid.JsonIn(),
 				mid.Method(http.MethodGet),
 			},
 			http.HandlerFunc(handle),
