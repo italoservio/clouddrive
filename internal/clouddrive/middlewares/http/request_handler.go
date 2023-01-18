@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"time"
+
+	"github.com/italoservio/clouddrive/internal/clouddrive/logger"
 )
 
 func ReqHandler(
@@ -13,25 +14,7 @@ func ReqHandler(
 	next http.HandlerFunc,
 ) http.HandlerFunc {
 	return func(wri http.ResponseWriter, req *http.Request) {
-		time := time.Now()
-		date_time := fmt.Sprintf(
-			"%s/%s/%d %d:%d:%d",
-			fmt.Sprintf("%02d", time.Day()),
-			fmt.Sprintf("%02d", time.Month()),
-			time.Year(),
-			time.Hour(),
-			time.Minute(),
-			time.Second(),
-		)
-
-		fmt.Printf(
-			"[%s - %s - %s] BODY %v HEADERS %v\n",
-			req.Method,
-			date_time,
-			req.RemoteAddr,
-			req.Body,
-			req.Header,
-		)
+		logRequest(req)
 
 		for _, fn := range functions {
 			if err0 := fn(wri, req); err0 != nil {
@@ -47,4 +30,14 @@ func ReqHandler(
 
 		next(wri, req)
 	}
+}
+
+func logRequest(req *http.Request) {
+	logger.Info(fmt.Sprintf(
+		"[%s - %s] BODY %v HEADERS %v",
+		req.Method,
+		req.RemoteAddr,
+		req.Body,
+		req.Header,
+	))
 }

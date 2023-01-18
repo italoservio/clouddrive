@@ -2,11 +2,11 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/italoservio/clouddrive/internal/clouddrive/entities"
+	"github.com/italoservio/clouddrive/internal/clouddrive/logger"
 	mid "github.com/italoservio/clouddrive/internal/clouddrive/middlewares/http"
 )
 
@@ -40,6 +40,6 @@ func main() {
 		),
 	)
 
-	fmt.Println("Server listening at http://localhost:6000")
+	logger.Info("Golang application is running and listening at http://localhost:6000")
 	http.ListenAndServe(":6000", nil)
 }
