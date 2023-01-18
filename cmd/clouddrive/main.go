@@ -2,10 +2,11 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/italoservio/clouddrive/internal/clouddrive/entities"
-	"github.com/italoservio/clouddrive/internal/clouddrive/middlewares"
+	mid "github.com/italoservio/clouddrive/internal/clouddrive/middlewares/http"
 )
 
 func handle(wri http.ResponseWriter, req *http.Request) {
@@ -14,6 +15,17 @@ func handle(wri http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/", middlewares.Http(http.MethodGet, http.HandlerFunc(handle)))
+	http.HandleFunc(
+		"/",
+		mid.Intercept(
+			[]mid.Middleware{
+				mid.Json(),
+				mid.Method(http.MethodGet),
+			},
+			http.HandlerFunc(handle),
+		),
+	)
+
+	fmt.Println("Server listening at http://localhost:6000")
 	http.ListenAndServe(":6000", nil)
 }
