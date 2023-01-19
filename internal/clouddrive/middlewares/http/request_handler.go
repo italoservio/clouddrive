@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/italoservio/clouddrive/internal/clouddrive/logger"
+	"github.com/italoservio/clouddrive/pkg/logger"
 )
 
 func ReqHandler(

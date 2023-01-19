@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/italoservio/clouddrive/internal/clouddrive/errors"
-	"github.com/italoservio/clouddrive/internal/clouddrive/logger"
+	"github.com/italoservio/clouddrive/pkg/logger"
 )
 
 type HttpResponse struct {
