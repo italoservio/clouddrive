@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/italoservio/clouddrive/internal/clouddrive/entities"
-	"github.com/italoservio/clouddrive/internal/clouddrive/logger"
 	mid "github.com/italoservio/clouddrive/internal/clouddrive/middlewares/http"
+	"github.com/italoservio/clouddrive/pkg/logger"
 )
 
 func handle(wri http.ResponseWriter, req *http.Request) {
