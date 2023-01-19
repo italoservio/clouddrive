@@ -14,9 +14,8 @@ func Method(method string) Middleware {
 			wri.Header().Set("Access-Control-Allow-Origin", "*")
 			wri.Header().Set("Access-Control-Max-Age", "86400")
 			return CreateHttpResponse(
-				http.StatusNoContent,
-				"",
 				nil,
+				http.StatusNoContent,
 			)
 		}
 
@@ -27,9 +26,8 @@ func Method(method string) Middleware {
 			(method == http.MethodDelete && req.Method != http.MethodDelete) {
 
 			return CreateHttpResponse(
-				http.StatusNotImplemented,
 				errors.BAD_HTTP_METHOD_VERB_ERR,
-				nil,
+				GetErrorHttpStatusByCode(errors.BAD_HTTP_METHOD_VERB_ERR),
 			)
 		}
 

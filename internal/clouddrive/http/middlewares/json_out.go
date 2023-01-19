@@ -15,9 +15,8 @@ func JsonOut() Middleware {
 		accept := req.Header.Get("accept")
 		if accept != "*/*" && !strings.Contains(accept, "application/json") {
 			return CreateHttpResponse(
-				http.StatusBadRequest,
 				errors.BAD_ACCEPT_HEADER_ERR,
-				nil,
+				GetErrorHttpStatusByCode(errors.BAD_ACCEPT_HEADER_ERR),
 			)
 		}
 

@@ -7,6 +7,8 @@ import (
 	"github.com/italoservio/clouddrive/pkg/logger"
 )
 
+type Middleware func(http.ResponseWriter, *http.Request) *HttpResponse
+
 func ReqHandler(
 	functions []Middleware,
 	next http.HandlerFunc,
@@ -29,11 +31,10 @@ func ReqHandler(
 
 func logRequest(req *http.Request) {
 	logger.Info(fmt.Sprintf(
-		"[%s - %s] BODY %v HEADERS %v",
+		"%s %s %s",
 		req.Method,
+		req.RequestURI,
 		req.RemoteAddr,
-		req.Body,
-		req.Header,
 	))
 }
 

@@ -12,9 +12,9 @@ func Info(msg string) {
 
 	fmt.Printf(
 		"%s[INFO][%s][%s:%d]%s %s\n",
-		Green, getDateTime(),
+		green, getDateTime(),
 		cutFilename(filename), line,
-		Reset, msg,
+		reset, msg,
 	)
 }
 
@@ -23,9 +23,9 @@ func Error(msg string) {
 
 	fmt.Printf(
 		"%s[ERROR][%s][%s:%d]%s %s\n",
-		Red, getDateTime(),
+		red, getDateTime(),
 		cutFilename(filename), line,
-		Reset, msg,
+		reset, msg,
 	)
 }
 
@@ -34,9 +34,9 @@ func Warn(msg string) {
 
 	fmt.Printf(
 		"%s[WARN][%s][%s:%d]%s %s\n",
-		Yellow, getDateTime(),
+		yellow, getDateTime(),
 		cutFilename(filename), line,
-		Reset, msg,
+		reset, msg,
 	)
 }
 

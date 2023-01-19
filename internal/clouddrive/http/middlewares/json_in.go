@@ -13,9 +13,8 @@ func JsonIn() Middleware {
 		content_type := req.Header.Get("content-type")
 		if content_type != "*/*" && !strings.Contains(content_type, "application/json") {
 			return CreateHttpResponse(
-				http.StatusBadRequest,
 				errors.BAD_CONTENT_TYPE_HEADER_ERR,
-				nil,
+				GetErrorHttpStatusByCode(errors.BAD_CONTENT_TYPE_HEADER_ERR),
 			)
 		}
 
