@@ -2,19 +2,48 @@ package logger
 
 import (
 	"fmt"
+	"runtime"
+	"strings"
 	"time"
 )
 
 func Info(msg string) {
-	fmt.Printf("%s[INFO][%s]%s %s\n", Green, getDateTime(), Reset, msg)
+	_, filename, line, _ := runtime.Caller(1)
+
+	fmt.Printf(
+		"%s[INFO][%s][%s:%d]%s %s\n",
+		Green, getDateTime(),
+		cutFilename(filename), line,
+		Reset, msg,
+	)
 }
 
 func Error(msg string) {
-	fmt.Printf("%s[ERROR][%s]%s %s\n", Red, getDateTime(), Reset, msg)
+	_, filename, line, _ := runtime.Caller(1)
+
+	fmt.Printf(
+		"%s[ERROR][%s][%s:%d]%s %s\n",
+		Red, getDateTime(),
+		cutFilename(filename), line,
+		Reset, msg,
+	)
 }
 
 func Warn(msg string) {
-	fmt.Printf("%s[WARN][%s]%s %s\n", Yellow, getDateTime(), Reset, msg)
+	_, filename, line, _ := runtime.Caller(1)
+
+	fmt.Printf(
+		"%s[WARN][%s][%s:%d]%s %s\n",
+		Yellow, getDateTime(),
+		cutFilename(filename), line,
+		Reset, msg,
+	)
+}
+
+func cutFilename(filename string) string {
+	filename_arr := strings.Split(filename, "/")
+	filename = strings.Join(filename_arr[len(filename_arr)-3:], "/")
+	return filename
 }
 
 func getDateTime() string {

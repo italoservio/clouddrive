@@ -1,9 +1,11 @@
 package middlewares
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"github.com/italoservio/clouddrive/internal/clouddrive/errors"
+	"github.com/italoservio/clouddrive/internal/clouddrive/logger"
 )
 
 type HttpResponse struct {
@@ -33,4 +35,13 @@ func CreateHttpResponse(
 	}
 
 	return http_response
+}
+
+func (hr *HttpResponse) ToJson() []byte {
+	obj, err := json.Marshal(hr)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil
+	}
+	return obj
 }

@@ -1,8 +1,6 @@
 package main
 
 import (
-	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/italoservio/clouddrive/internal/clouddrive/entities"
@@ -18,13 +16,7 @@ func handle(wri http.ResponseWriter, req *http.Request) {
 		"",
 		user,
 	)
-
-	obj, err := json.Marshal(response)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	wri.Write(obj)
+	wri.Write(response.ToJson())
 }
 
 func main() {

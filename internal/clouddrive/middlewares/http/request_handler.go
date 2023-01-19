@@ -1,9 +1,7 @@
 package middlewares
 
 import (
-	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/italoservio/clouddrive/internal/clouddrive/logger"
@@ -17,13 +15,10 @@ func ReqHandler(
 		logRequest(req)
 
 		for _, fn := range functions {
-			if err0 := fn(wri, req); err0 != nil {
-				json, err1 := json.Marshal(err0)
-				if err1 != nil {
-					log.Fatalf(err1.Error())
-				}
-				wri.WriteHeader(err0.StatusCode)
-				wri.Write(json)
+			if err := fn(wri, req); err != nil {
+				wri.WriteHeader(err.StatusCode)
+				wri.Write(err.ToJson())
+				logErr(err)
 				return
 			}
 		}
@@ -39,5 +34,13 @@ func logRequest(req *http.Request) {
 		req.RemoteAddr,
 		req.Body,
 		req.Header,
+	))
+}
+
+func logErr(err *HttpResponse) {
+	logger.Error(fmt.Sprintf(
+		"STATUS %d MESSAGE %v",
+		err.StatusCode,
+		err.Err,
 	))
 }
