@@ -25,6 +25,12 @@ func GetErrorMessageByCode(error_code string) ErrorMessageLang {
 			EnUs: "Invalid HTTP verb, please verify the correct verb for this endpoint",
 		}
 
+	case BAD_JSON_MARSHALING:
+		return ErrorMessageLang{
+			PtBr: "Falha na conversão do JSON de entrada",
+			EnUs: "Failed on input JSON marshaling",
+		}
+
 	default:
 		return ErrorMessageLang{
 			PtBr: "Erro interno e inesperado",

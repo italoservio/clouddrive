@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"encoding/json"
+	"log"
 	"net/http"
 
 	mid "github.com/italoservio/clouddrive/internal/clouddrive/http/middlewares"
@@ -11,25 +11,20 @@ import (
 
 func CreateUser(wri http.ResponseWriter, req *http.Request) {
 	var req_payload dtos.DTOCreateUserReq
-
-	if err := json.NewDecoder(req.Body).Decode(&req_payload); err != nil {
-		err_str := err.Error()
-		response := mid.CreateHttpResponse(err_str, mid.GetErrorHttpStatusByCode(err_str))
-		wri.WriteHeader(mid.GetErrorHttpStatusByCode(err_str))
-		wri.Write(response.ToJson())
+	err := ParseJsonToStruct[dtos.DTOCreateUserReq](wri, req.Body, &req_payload)
+	if err != nil {
 		return
 	}
 
 	res_payload, err := usecases.CreateUser(req_payload)
 	if err != nil {
-		err_str := err.Error()
-		response := mid.CreateHttpResponse(err_str, mid.GetErrorHttpStatusByCode(err_str))
-		wri.WriteHeader(mid.GetErrorHttpStatusByCode(err_str))
-		wri.Write(response.ToJson())
+		HandleExecutionError(wri, err)
 		return
 	}
 
 	wri.WriteHeader(http.StatusCreated)
 	res := mid.CreateHttpResponse(res_payload, http.StatusOK)
-	wri.Write(res.ToJson())
+	if _, err := wri.Write(res.ToJson()); err != nil {
+		log.Fatal(err)
+	}
 }
