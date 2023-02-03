@@ -3,25 +3,28 @@ package usecases
 import (
 	"errors"
 	"time"
+
 	jwt "github.com/golang-jwt/jwt/v4"
 	custom_errors "github.com/italoservio/clouddrive/internal/clouddrive/errors"
+	"github.com/italoservio/clouddrive/internal/clouddrive/repositories"
 	"github.com/italoservio/clouddrive/internal/clouddrive/usecases/dtos"
 )
 
 func Authenticate(payload dtos.DTOAuthenticateReq) (*dtos.DTOAuthenticateRes, error) {
+	var document *dtos.DTOAuthenticateUserRes
 
-	res_payload, err := AuthenticateUser(payload)
+	document, err := repositories.AuthenticateRepo(payload)
 	if err != nil {
 		return nil, errors.New(custom_errors.UNEXPECTED_ERR)
 	}
 
 	expiration_date := time.Now().Add(2 * time.Hour)
 	unsigned_token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"sub": 1,
-		"iss": "clouddrive",
-		"iat": time.Now(),
-		"exp": expiration_date,
-		"firstName": res_payload.FirstName,		
+		"sub":       1,
+		"iss":       "clouddrive",
+		"iat":       time.Now(),
+		"exp":       expiration_date,
+		"firstName": document.FirstName,
 	})
 
 	access_token, err := unsigned_token.SignedString([]byte("SUPERSECRETO"))

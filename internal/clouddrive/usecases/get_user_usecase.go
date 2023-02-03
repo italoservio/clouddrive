@@ -1,21 +1,16 @@
 package usecases
 
 import (
-	"github.com/italoservio/clouddrive/internal/clouddrive/db"
-	"github.com/italoservio/clouddrive/internal/clouddrive/entities"
-	"github.com/italoservio/clouddrive/internal/clouddrive/usecases/dtos"
-	"go.mongodb.org/mongo-driver/bson"
 	"log"
+
+	"github.com/italoservio/clouddrive/internal/clouddrive/repositories"
+	"github.com/italoservio/clouddrive/internal/clouddrive/usecases/dtos"
 )
 
 func GetUser(payload dtos.DTOGetUserReq) (*dtos.DTOGetUserRes, error) {
-	coll := db.UsersDatabase.Collection(db.USERS_COLLECTION)
-	ctx, cancel := db.Context()
-	defer cancel()
+	var document *dtos.DTOGetUserRes
 
-	var document entities.User
-
-	err := coll.FindOne(ctx, bson.D{{"email", payload.Email}}).Decode(&document)
+	document, err := repositories.GetUserRepo(payload)
 	if err != nil {
 		log.Fatal(err)
 	}
