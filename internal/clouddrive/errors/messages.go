@@ -31,6 +31,42 @@ func GetErrorMessageByCode(error_code string) ErrorMessageLang {
 			EnUs: "Failed on input JSON marshaling",
 		}
 
+	case BAD_DB_CALL:
+		return ErrorMessageLang{
+			PtBr: "Falha na comunicação com o banco de dados",
+			EnUs: "Failed to establish communication with database",
+		}
+
+	case BAD_CONFLICT:
+		return ErrorMessageLang{
+			PtBr: "Há existe um registro semelhante e não pode haver duplicidade",
+			EnUs: "There is a similar record and there can be no duplicate",
+		}
+
+	case NOT_FOUND_REGISTRY:
+		return ErrorMessageLang{
+			PtBr: "Nenhum registro encontrado para os parâmetros de busca informados",
+			EnUs: "No records found for the informed search parameters",
+		}
+
+	case BAD_PATH_PARAMS:
+		return ErrorMessageLang{
+			PtBr: "Parâmetros de rota em formato inválido para esta rota",
+			EnUs: "Malformed path params for this route",
+		}
+
+	case BAD_BODY_PARAMS:
+		return ErrorMessageLang{
+			PtBr: "Parâmetro do corpo da requisição são inválidos para esta rota",
+			EnUs: "Malformed body params for this route",
+		}
+
+	case BAD_QUERY_PARAMS:
+		return ErrorMessageLang{
+			PtBr: "Parâmetros de busca da requisição são inválidos para esta rota",
+			EnUs: "Malformed query params for this route",
+		}
+
 	default:
 		return ErrorMessageLang{
 			PtBr: "Erro interno e inesperado",

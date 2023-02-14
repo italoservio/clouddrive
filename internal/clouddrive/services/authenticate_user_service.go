@@ -1,22 +1,27 @@
-package usecases
+package services
 
 import (
 	"errors"
 	"time"
 
 	jwt "github.com/golang-jwt/jwt/v4"
+	"github.com/italoservio/clouddrive/internal/clouddrive/db/repositories"
+	"github.com/italoservio/clouddrive/internal/clouddrive/dtos"
+	"github.com/italoservio/clouddrive/internal/clouddrive/entities"
 	custom_errors "github.com/italoservio/clouddrive/internal/clouddrive/errors"
-	"github.com/italoservio/clouddrive/internal/clouddrive/repositories"
-	"github.com/italoservio/clouddrive/internal/clouddrive/usecases/dtos"
 )
 
 func Authenticate(payload dtos.DTOAuthenticateReq) (*dtos.DTOAuthenticateRes, error) {
-	var document *dtos.DTOAuthenticateUserRes
-
-	document, err := repositories.AuthenticateRepo(payload)
+	user, err := repositories.UserByEmail(payload.Email)
 	if err != nil {
-		return nil, errors.New(custom_errors.UNEXPECTED_ERR)
+		return nil, errors.New(custom_errors.BAD_DB_CALL)
 	}
+
+	if (*user == entities.User{}) {
+		// ...
+	}
+
+	// TODO: Compare password...
 
 	expiration_date := time.Now().Add(2 * time.Hour)
 	unsigned_token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
@@ -24,7 +29,7 @@ func Authenticate(payload dtos.DTOAuthenticateReq) (*dtos.DTOAuthenticateRes, er
 		"iss":       "clouddrive",
 		"iat":       time.Now(),
 		"exp":       expiration_date,
-		"firstName": document.FirstName,
+		"firstName": user.FirstName,
 	})
 
 	access_token, err := unsigned_token.SignedString([]byte("SUPERSECRETO"))

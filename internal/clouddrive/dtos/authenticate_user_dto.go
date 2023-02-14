@@ -1,8 +1,6 @@
 package dtos
 
-import (
-	"time"
-)
+import "time"
 
 type DTOAuthenticateReq struct {
 	Email string `json:"email"`

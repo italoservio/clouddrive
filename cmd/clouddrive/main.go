@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 	"path"
@@ -19,7 +18,6 @@ func main() {
 	}
 
 	env_filename := path.Join(pwd, "cmd", "clouddrive", ".env")
-	fmt.Println(env_filename)
 	if err := godotenv.Load(env_filename); err != nil {
 		panic(err)
 	}
