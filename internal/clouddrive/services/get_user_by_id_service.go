@@ -7,17 +7,18 @@ import (
 	"github.com/italoservio/clouddrive/internal/clouddrive/dtos"
 	"github.com/italoservio/clouddrive/internal/clouddrive/entities"
 	custom_errors "github.com/italoservio/clouddrive/internal/clouddrive/errors"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func UserById(payload dtos.DTOGetUserByIdReq) (*dtos.DTOGetUserByIdRes, error) {
 	var user *entities.User
-	user, err := repositories.UserById(payload.Id)
+	user_repository := repositories.NewUserRepository()
+	user, err := user_repository.UserById(payload.Id)
 	if err != nil {
-		if err == mongo.ErrNoDocuments {
-			return nil, errors.New(custom_errors.NOT_FOUND_REGISTRY)
-		}
 		return nil, errors.New(custom_errors.BAD_DB_CALL)
+	}
+
+	if (*user == entities.User{}) {
+		return nil, errors.New(custom_errors.NOT_FOUND_REGISTRY)
 	}
 
 	return &dtos.DTOGetUserByIdRes{

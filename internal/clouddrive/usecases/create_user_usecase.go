@@ -5,22 +5,24 @@ import (
 
 	"github.com/italoservio/clouddrive/internal/clouddrive/db/repositories"
 	"github.com/italoservio/clouddrive/internal/clouddrive/dtos"
+	"github.com/italoservio/clouddrive/internal/clouddrive/entities"
 	custom_errors "github.com/italoservio/clouddrive/internal/clouddrive/errors"
 )
 
 func CreateUser(payload dtos.DTOCreateUserReq) (*dtos.DTOCreateUserRes, error) {
-	user, err := repositories.UserByEmail(payload.Email)
+	user_repository := repositories.NewUserRepository()
+	user, err := user_repository.UserByEmail(payload.Email)
 	if err != nil {
 		return nil, errors.New(custom_errors.BAD_DB_CALL)
 	}
 
-	if user != nil {
+	if (*user != entities.User{}) {
 		return nil, errors.New(custom_errors.BAD_CONFLICT)
 	}
 
 	// TODO: Encrypt password...
 
-	user, err = repositories.CreateUser(payload)
+	user, err = user_repository.CreateUser(payload)
 	if err != nil {
 		return nil, errors.New(custom_errors.BAD_DB_CALL)
 	}

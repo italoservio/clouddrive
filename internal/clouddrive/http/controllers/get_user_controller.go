@@ -29,7 +29,7 @@ func GetUserById(wri http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	wri.WriteHeader(http.StatusCreated)
+	wri.WriteHeader(http.StatusOK)
 	res := mid.CreateHttpResponse(res_payload, http.StatusOK)
 	if _, err := wri.Write(res.ToJson()); err != nil {
 		log.Fatal(err)

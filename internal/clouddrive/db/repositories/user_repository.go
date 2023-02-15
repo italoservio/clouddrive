@@ -6,24 +6,41 @@ import (
 	"github.com/italoservio/clouddrive/internal/clouddrive/entities"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func UserByEmail(email string) (*entities.User, error) {
+type UserRepository struct {
+	coll *mongo.Collection
+}
+
+func NewUserRepository() *UserRepository {
 	coll := db.UsersDatabase.Collection(db.USERS_COLLECTION)
+	return &UserRepository{
+		coll: coll,
+	}
+}
+
+func (usr *UserRepository) UserByEmail(email string) (*entities.User, error) {
 	ctx, cancel := db.Context()
 	defer cancel()
 
-	var user *entities.User
-	err := coll.FindOne(ctx, bson.D{{Key: "email", Value: email}}).Decode(&user)
+	var document *entities.User
+	err := usr.coll.FindOne(
+		ctx,
+		bson.D{{Key: "email", Value: email}},
+	).Decode(&document)
+
 	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return &entities.User{}, nil
+		}
 		return nil, err
 	}
 
-	return user, nil
+	return document, nil
 }
 
-func UserById(id string) (*entities.User, error) {
-	coll := db.UsersDatabase.Collection(db.USERS_COLLECTION)
+func (usr *UserRepository) UserById(id string) (*entities.User, error) {
 	ctx, cancel := db.Context()
 	defer cancel()
 
@@ -33,8 +50,14 @@ func UserById(id string) (*entities.User, error) {
 		return nil, err
 	}
 
-	err = coll.FindOne(ctx, bson.D{{Key: "_id", Value: objectId}}).Decode(&document)
+	err = usr.coll.FindOne(
+		ctx,
+		bson.D{{Key: "_id", Value: objectId}},
+	).Decode(&document)
 	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return &entities.User{}, nil
+		}
 		return nil, err
 	}
 
@@ -47,12 +70,13 @@ func UserById(id string) (*entities.User, error) {
 	}, nil
 }
 
-func CreateUser(payload dtos.DTOCreateUserReq) (*entities.User, error) {
-	coll := db.UsersDatabase.Collection(db.USERS_COLLECTION)
+func (usr *UserRepository) CreateUser(
+	payload dtos.DTOCreateUserReq,
+) (*entities.User, error) {
 	ctx, cancel := db.Context()
 	defer cancel()
 
-	res, err := coll.InsertOne(ctx, payload)
+	res, err := usr.coll.InsertOne(ctx, payload)
 	if err != nil {
 		return nil, err
 	}

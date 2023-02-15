@@ -23,7 +23,7 @@ func CreateUser(wri http.ResponseWriter, req *http.Request) {
 	}
 
 	wri.WriteHeader(http.StatusCreated)
-	res := mid.CreateHttpResponse(res_payload, http.StatusOK)
+	res := mid.CreateHttpResponse(res_payload, http.StatusCreated)
 	if _, err := wri.Write(res.ToJson()); err != nil {
 		log.Fatal(err)
 	}

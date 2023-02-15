@@ -12,7 +12,8 @@ import (
 )
 
 func Authenticate(payload dtos.DTOAuthenticateReq) (*dtos.DTOAuthenticateRes, error) {
-	user, err := repositories.UserByEmail(payload.Email)
+	user_repository := repositories.NewUserRepository()
+	user, err := user_repository.UserByEmail(payload.Email)
 	if err != nil {
 		return nil, errors.New(custom_errors.BAD_DB_CALL)
 	}
