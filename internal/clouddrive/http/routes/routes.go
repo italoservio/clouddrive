@@ -16,7 +16,33 @@ func SetupRoutes() {
 				mid.JsonIn(),
 				mid.Method(http.MethodPost),
 			},
-			http.HandlerFunc(controllers.Authenticate),
+			http.HandlerFunc(controllers.AuthenticateUser),
+		),
+	)
+
+	http.HandleFunc(
+		"/users",
+		mid.ReqHandler(
+			[]mid.Middleware{
+				mid.JsonOut(),
+				mid.JsonIn(),
+				mid.Method(http.MethodPost),
+			},
+			http.HandlerFunc(controllers.CreateUser),
+		),
+	)
+
+	http.HandleFunc(
+		"/users/",
+		mid.ReqHandler(
+			[]mid.Middleware{
+				mid.JsonOut(),
+				mid.JsonIn(),
+				mid.Method(http.MethodGet),
+			},
+			func(w http.ResponseWriter, r *http.Request) {
+				controllers.GetUserById(w, r)
+			},
 		),
 	)
 }
