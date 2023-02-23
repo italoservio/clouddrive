@@ -7,6 +7,8 @@ import (
 	"github.com/italoservio/clouddrive/internal/clouddrive/dtos"
 	"github.com/italoservio/clouddrive/internal/clouddrive/entities"
 	custom_errors "github.com/italoservio/clouddrive/internal/clouddrive/errors"
+	"github.com/italoservio/clouddrive/pkg/logger"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func CreateUser(payload dtos.DTOCreateUserReq) (*dtos.DTOCreateUserRes, error) {
@@ -20,7 +22,13 @@ func CreateUser(payload dtos.DTOCreateUserReq) (*dtos.DTOCreateUserRes, error) {
 		return nil, errors.New(custom_errors.BAD_CONFLICT)
 	}
 
-	// TODO: Encrypt password...
+	bytes, err := bcrypt.GenerateFromPassword([]byte(payload.Pass), 14)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, errors.New(custom_errors.UNEXPECTED_ERR)
+	}
+
+	payload.Pass = string(bytes)
 
 	user, err = user_repository.CreateUser(payload)
 	if err != nil {

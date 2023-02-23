@@ -9,6 +9,7 @@ import (
 	"github.com/italoservio/clouddrive/internal/clouddrive/dtos"
 	"github.com/italoservio/clouddrive/internal/clouddrive/entities"
 	custom_errors "github.com/italoservio/clouddrive/internal/clouddrive/errors"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func Authenticate(payload dtos.DTOAuthenticateReq) (*dtos.DTOAuthenticateRes, error) {
@@ -18,11 +19,14 @@ func Authenticate(payload dtos.DTOAuthenticateReq) (*dtos.DTOAuthenticateRes, er
 		return nil, errors.New(custom_errors.BAD_DB_CALL)
 	}
 
-	if (*user == entities.User{}) {
-		// ...
+	if (user == &entities.User{}) {
+		return nil, errors.New(custom_errors.NOT_FOUND_REGISTRY)
 	}
 
-	// TODO: Compare password...
+	err = bcrypt.CompareHashAndPassword([]byte(user.Pass), []byte(payload.Pass))
+	if err != nil {
+		return nil, errors.New(custom_errors.NOT_FOUND_REGISTRY)
+	}
 
 	expiration_date := time.Now().Add(2 * time.Hour)
 	unsigned_token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
