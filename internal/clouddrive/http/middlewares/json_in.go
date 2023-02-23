@@ -9,7 +9,6 @@ import (
 
 func JsonIn() Middleware {
 	return func(wri http.ResponseWriter, req *http.Request) *HttpResponse {
-
 		content_type := req.Header.Get("content-type")
 		if content_type != "*/*" && !strings.Contains(content_type, "application/json") {
 			return CreateHttpResponse(
